@@ -18,6 +18,11 @@
     <!-- Marked JS for parsing markdown responses from Gemini -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+    <script>
+      if (sessionStorage.getItem('ge_logged_in') !== '1') {
+        window.location.href = '/login';
+      }
+    </script>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
@@ -47,6 +52,9 @@
             </div>
             <button id="toggle-settings-btn" class="icon-btn" title="Settings">
               <i data-lucide="settings"></i>
+            </button>
+            <button id="logout-btn" class="icon-btn" title="Sign Out">
+              <i data-lucide="log-out"></i>
             </button>
           </div>
         </header>

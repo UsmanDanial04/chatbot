@@ -183,6 +183,15 @@ function registerEventListeners() {
   });
 
   saveSettingsBtn.addEventListener('click', saveSettings);
+
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('ge_logged_in');
+      sessionStorage.removeItem('ge_user_email');
+      window.location.href = '/login';
+    });
+  }
 }
 
 // ---------------------------------------------------------------------------

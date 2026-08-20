@@ -28,7 +28,7 @@ CHUNK_SIZE = 400          # characters per chunk
 CHUNK_OVERLAP = 80        # overlap between consecutive chunks
 TOP_K_DEFAULT = 5         # chunks returned per query
 EMBED_MODEL = "all-MiniLM-L6-v2"   # ~90 MB, runs locally
-CHROMA_DIR = "./chroma_db"          # persisted to disk
+CHROMA_DIR = os.getenv("CHROMA_DIR", "/tmp/chroma_db" if (os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME")) else "./chroma_db")
 
 
 # ---------------------------------------------------------------------------

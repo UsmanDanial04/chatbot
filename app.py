@@ -7,6 +7,7 @@ from google import genai
 from google.genai import types
 import os
 import logging
+from pathlib import Path
 from dotenv import load_dotenv
 
 from rag_engine import rag_engine
@@ -14,6 +15,8 @@ from rag_engine import rag_engine
 # ---------------------------------------------------------------------------
 # Setup
 # ---------------------------------------------------------------------------
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(env_path)
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,11 +32,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+BASE_DIR = Path(__file__).resolve().parent
+
 # Ensure static folder exists
-os.makedirs("static", exist_ok=True)
+os.makedirs(BASE_DIR / "static", exist_ok=True)
 
 # Mount static files directory
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 # Allowed upload types
 ALLOWED_TYPES = {
@@ -66,8 +71,8 @@ class LoginRequest(BaseModel):
 # ---------------------------------------------------------------------------
 @app.post("/api/login")
 async def login(request: LoginRequest):
-    valid_email    = os.getenv("LOGIN_EMAIL", "").strip()
-    valid_password = os.getenv("LOGIN_PASSWORD", "").strip()
+    valid_email    = os.getenv("LOGIN_EMAIL", "abcd@gmail.com").strip()
+    valid_password = os.getenv("LOGIN_PASSWORD", "123456").strip()
     if not valid_email or not valid_password:
         raise HTTPException(status_code=500, detail="Login credentials not configured on server.")
     if request.email.strip().lower() != valid_email.lower() or request.password != valid_password:
@@ -77,7 +82,7 @@ async def login(request: LoginRequest):
 @app.get("/login", response_class=HTMLResponse)
 async def get_login():
     try:
-        with open("login.html", "r", encoding="utf-8") as f:
+        with open(BASE_DIR / "login.html", "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="login.html not found at project root")
@@ -86,7 +91,7 @@ async def get_login():
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
     try:
-        with open("index.html", "r", encoding="utf-8") as f:
+        with open(BASE_DIR / "index.html", "r", encoding="utf-8") as f:
             return f.read()
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="index.html not found at project root")
